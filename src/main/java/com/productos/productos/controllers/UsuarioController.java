@@ -12,6 +12,7 @@ import java.util.Optional;
 public class UsuarioController {
     @Autowired
     UsuarioService usuarioService;
+    UsuarioModel usuarioModel;
 
     @GetMapping()
     public ArrayList<UsuarioModel> obtenerUsuarios(){
@@ -28,10 +29,23 @@ public class UsuarioController {
         return this.usuarioService.obtenerPorId(id);
     }
 
-    @GetMapping(path = "/query")
-    public ArrayList<UsuarioModel> obtenerUsuarioPorPrioridad(@RequestParam("prioridad") Integer prioridad){
-        return this.usuarioService.obtenerPorPrioridad(prioridad);
+    @PostMapping(path = "/login")
+    public String login(@RequestParam String username, @RequestParam String password){
+        String aux ="";
+        boolean status = false;
+        ArrayList<UsuarioModel> resul =  usuarioService.login(username);
+        if (resul.get(0).getPassword().equals(password)){
+
+            aux = "Cotraseña correcta";
+            status = true;
+        }else {
+            aux = "Contraseña Incorrecta";
+
+        }
+
+        return aux+"\nStatus:" + status;
     }
+
 
     @DeleteMapping(path = "/{id}")
     public String eliminarPorId(@PathVariable("id") Long id){
